@@ -1,0 +1,13 @@
+{
+  "name": "ostyna/sing",
+  "description": "Lightweight Templates Engine",
+  "autoload": {
+      "psr-4": {
+          "Ostyna\\Sing\\": "",
+          "Ostyna\\Sing\\Utils\\": "utils/",
+      }
+  },
+  "require": {
+      "ostyna/sing": "*"
+  }
+}
