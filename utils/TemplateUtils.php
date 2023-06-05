@@ -14,6 +14,7 @@ class TemplateUtils {
 
   private static function compile_parameters(string $code, array $parameters = []): string {
 
+    $code = self::replace_blocks($code);
     $code = self::replace_variables($code, $parameters);
 
     $code = self::replace_undefined($code);
@@ -21,7 +22,7 @@ class TemplateUtils {
     return $code;
   }
 
-  private static function replace_variables(string $code, array $parameters = []) :string {
+  private static function replace_variables(string $code, array $parameters = []): string {
 
     if(count($parameters) > 0) {
  
@@ -72,8 +73,21 @@ class TemplateUtils {
 
   }
 
+  private static function replace_blocks(string $code): string {
+
+    preg_match_all('/{% ?block ?(.*?) ?%}/is', $code, $matches);
+    foreach ($matches[1] as $block) {
+      if(file_exists($block)) {
+        $code = preg_replace('/{% ?block ?('.$block.') ?%}/is', file_get_contents($block) , $code);
+      }
+    }
+
+    return $code;
+  }
+
   private static function replace_undefined(string $code): string {
     $code = preg_replace('~\{{\s*(.*?)\s*\}}~is', '' , $code);
+    $code = preg_replace('/{% ?block ?(.*?) ?%}/is', '' , $code);
     return $code;
   }
 
