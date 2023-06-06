@@ -75,10 +75,10 @@ class TemplateUtils {
 
   private static function replace_blocks(string $code): string {
 
-    preg_match_all('/{% ?block ?(.*?) ?%}/is', $code, $matches);
+    preg_match_all('/{% ?include ?(.*?) ?%}/is', $code, $matches);
     foreach ($matches[1] as $block) {
       if(file_exists($block)) {
-        $code = preg_replace('/{% ?block ?('.$block.') ?%}/is', file_get_contents($block) , $code);
+        $code = preg_replace('/{% ?include ?('.$block.') ?%}/is', file_get_contents($block) , $code);
       }
     }
 
