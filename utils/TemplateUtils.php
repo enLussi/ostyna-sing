@@ -2,6 +2,9 @@
 
 namespace Ostyna\Sing\Utils;
 
+use Ostyna\Component\Error\FatalException;
+use Ostyna\Component\Utils\CoreUtils;
+
 class TemplateUtils {
   
   public static function sing(string $html_file_path, array $parameters = []): string {
@@ -42,26 +45,35 @@ class TemplateUtils {
               $method = "get".ucfirst($data[1]);
               if(method_exists($object, $method)) {
                 $replacer = preg_quote($object->$method());
+              } elseif(method_exists($object, $data[1])) {
+                $method = $data[1];
+                $replacer = preg_quote($object->$method());
               } else {
+                throw new FatalException("Aucune méthode correspondante à $expression", 0);
                 // ERROR MISSING METHOD
               }
             } elseif (is_array($object)) {
               if(isset($object[$data[1]])) {
                 $replacer = $object[$data[1]];
               } else {
+                throw new FatalException("Aucune valeur de tableau correspondante à $expression", 0);
                 // ERROR MISSING ARRAY VALUE
               }
             }
 
             $code = preg_replace('~\{{\s*('.$expression.')\s*\}}~is', $replacer, $code);
           } else {
+            throw new FatalException("Aucune valeur correspondante à $expression définie", 0);
             // EXPRESSION NON DEFINI
           }
         } else {
           if(!is_array($expression) || !is_object($expression)){
             if(isset($parameters[$expression])) {
               $replacer = $parameters[$expression];
+            } elseif($expression === "env") {
+              $replacer = CoreUtils::get_env('APP_ENV');
             } else {
+              throw new FatalException("Aucune valeur correspondante à $expression définie", 0);
               // EXPRESSION NON DEFINI
             }
             $code = preg_replace('~\{{\s*('.$expression.')\s*\}}~is', $replacer , $code);
