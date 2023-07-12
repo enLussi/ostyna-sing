@@ -89,8 +89,9 @@ class TemplateUtils {
 
     preg_match_all('/{% ?include ?(.*?) ?%}/is', $code, $matches);
     foreach ($matches[1] as $block) {
-      if(file_exists($block)) {
-        $code = preg_replace('/{% ?include ?('.$block.') ?%}/is', file_get_contents($block) , $code);
+      if(file_exists(CoreUtils::get_project_root().'/templates/web/'.$block)) {
+        $blocks = preg_quote($block, '/');
+        $code = preg_replace('/{% ?include ?('.$blocks.') ?%}/is', file_get_contents(CoreUtils::get_project_root().'/templates/web/'.$block) , $code);
       }
     }
 
