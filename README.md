@@ -26,4 +26,4 @@ ou des objets avec une méthode "get" défini.
 ```sh
 {{ object.id }}
 ```
-utilisera la méthode getId pour récupérer la valeur
+utilisera la méthode getId de la classe attribuer à la clé object pour récupérer la valeur
